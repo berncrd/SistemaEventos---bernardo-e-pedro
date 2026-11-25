@@ -1,0 +1,98 @@
+@model EventoDetalhesViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var evento = Model.Evento;
+    ViewData["Title"] = evento.Titulo;
+    var ehAdmin = User.IsInRole(Perfis.Admin);
+    var logado = SignInManager.IsSignedIn(User);
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a asp-action="Index" class="link-brand">Eventos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@evento.Titulo</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="detalhe-capa mb-4">
+            <img src="@evento.Imagem" alt="Imagem do evento @evento.Titulo" />
+        </div>
+        <span class="badge rounded-pill badge-categoria mb-2">@evento.CategoriaNome</span>
+        @if (!evento.Ativo)
+        {
+            <span class="badge rounded-pill text-bg-secondary mb-2">Rascunho (visível só para o admin)</span>
+        }
+        <h1 class="fw-bolder mb-3">@evento.Titulo</h1>
+        <h2 class="h5 fw-bold mt-4">Sobre o evento</h2>
+        <p class="texto-descricao">@evento.Descricao</p>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm painel-inscricao sticky-lg-top">
+            <div class="card-body p-4">
+                <ul class="list-unstyled evento-info evento-info-lg mb-4">
+                    <li>
+                        <i class="bi bi-calendar3"></i>
+                        <div><strong>Data</strong><span>@evento.Periodo</span></div>
+                    </li>
+                    <li>
+                        <i class="bi bi-geo-alt"></i>
+                        <div><strong>Local</strong><span>@evento.Local</span></div>
+                    </li>
+                    <li>
+                        <i class="bi bi-ticket-perforated"></i>
+                        <div><strong>Valor</strong><span>@evento.Preco.PrecoOuGratuito()</span></div>
+                    </li>
+                    <li>
+                        <i class="bi bi-people"></i>
+                        <div><strong>Vagas</strong><span>@evento.VagasDisponiveis disponíveis de @evento.Vagas</span></div>
+                    </li>
+                </ul>
+
+                <div class="progress mb-1" role="progressbar" aria-label="Ocupação" aria-valuenow="@evento.PercentualOcupacao" aria-valuemin="0" aria-valuemax="100" style="height: 8px">
+                    <div class="progress-bar @(evento.Lotado ? "bg-danger" : "bg-brand")" style="width: @(evento.PercentualOcupacao)%"></div>
+                </div>
+                <p class="small text-secondary mb-4">@evento.InscritosAtivos inscrito(s) · @evento.PercentualOcupacao% ocupado</p>
+
+                @if (ehAdmin)
+                {
+                    <a class="btn btn-outline-brand w-100" asp-area="Admin" asp-controller="Eventos" asp-action="Details" asp-route-id="@evento.Id">
+                        <i class="bi bi-gear"></i> Gerenciar no painel
+                    </a>
+                }
+                else if (Model.InscricaoAtiva)
+                {
+                    var minhaSituacao = Model.MinhaInscricaoStatus.GetValueOrDefault();
+                    <div class="alert alert-success small mb-3">
+                        <i class="bi bi-check2-circle"></i> Você está inscrito(a) neste evento.
+                        Situação: <span class="@(minhaSituacao.ClasseBadge())">@(minhaSituacao.Nome())</span>
+                    </div>
+                    <a class="btn btn-outline-brand w-100" asp-controller="Inscricoes" asp-action="Detalhes" asp-route-id="@Model.MinhaInscricaoId">Ver minha inscrição</a>
+                }
+                else if (evento.Encerrado)
+                {
+                    <button class="btn btn-secondary w-100" disabled><i class="bi bi-lock"></i> Inscrições encerradas</button>
+                    <p class="small text-secondary mt-2 mb-0">O evento já começou ou foi realizado.</p>
+                }
+                else if (evento.Lotado)
+                {
+                    <button class="btn btn-secondary w-100" disabled><i class="bi bi-slash-circle"></i> Vagas esgotadas</button>
+                }
+                else
+                {
+                    <a class="btn btn-brand btn-lg w-100" asp-controller="Inscricoes" asp-action="Nova" asp-route-id="@evento.Id">Inscrever-se</a>
+                    if (!logado)
+                    {
+                        <p class="small text-secondary mt-2 mb-0 text-center">Você precisará entrar ou criar uma conta.</p>
+                    }
+                    else if (Model.MinhaInscricaoStatus == StatusInscricao.Cancelada)
+                    {
+                        <p class="small text-secondary mt-2 mb-0 text-center">Você cancelou uma inscrição anterior e pode se inscrever novamente.</p>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

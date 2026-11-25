@@ -1,0 +1,20 @@
+# Build
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+
+# IDEs
+.vs/
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Imagens enviadas pelo cadastro de eventos (geradas em tempo de execução)
+SistemaEventos/wwwroot/uploads/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db

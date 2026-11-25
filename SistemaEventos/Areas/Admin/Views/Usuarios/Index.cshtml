@@ -1,0 +1,73 @@
+@model List<UsuarioItemViewModel>
+@{
+    ViewData["Title"] = "Usuários";
+    var busca = ViewData["Busca"] as string;
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <h1 class="admin-titulo mb-1">Usuários</h1>
+        <p class="text-secondary mb-0">Contas cadastradas e participação em eventos.</p>
+    </div>
+</div>
+
+<form method="get" asp-action="Index" class="row g-2 mb-3" role="search">
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+            <input type="search" name="busca" value="@busca" class="form-control" placeholder="Buscar por nome ou e-mail" />
+        </div>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-secondary">Buscar</button>
+        @if (!string.IsNullOrWhiteSpace(busca))
+        {
+            <a asp-action="Index" class="btn btn-link">Limpar</a>
+        }
+    </div>
+</form>
+
+<div class="admin-card">
+    <div class="table-responsive">
+        <table class="table admin-tabela align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>Perfil</th>
+                    <th>Cadastro</th>
+                    <th class="text-center">Inscrições</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr><td colspan="6" class="text-center text-secondary py-4">Nenhum usuário encontrado.</td></tr>
+                }
+                @foreach (var usuario in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="avatar-pequeno">@(string.IsNullOrEmpty(usuario.NomeCompleto) ? "?" : usuario.NomeCompleto.Substring(0, 1).ToUpper())</span>
+                                <div>
+                                    <div class="fw-semibold">@usuario.NomeCompleto</div>
+                                    <div class="small text-secondary">@usuario.Email</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="small">@(usuario.Telefone ?? "—")</td>
+                        <td>
+                            <span class="badge @(usuario.EhAdmin ? "text-bg-dark" : "badge-categoria")">@(string.IsNullOrEmpty(usuario.Perfis) ? "Sem perfil" : usuario.Perfis)</span>
+                        </td>
+                        <td class="small text-nowrap">@usuario.DataCadastro.DataCurta()</td>
+                        <td class="text-center small">@usuario.InscricoesAtivas em aberto · @usuario.TotalInscricoes no total</td>
+                        <td class="text-end"><a class="btn btn-sm btn-acao" asp-action="Details" asp-route-id="@usuario.Id">Detalhes</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<p class="small text-secondary mt-2">@Model.Count conta(s)</p>

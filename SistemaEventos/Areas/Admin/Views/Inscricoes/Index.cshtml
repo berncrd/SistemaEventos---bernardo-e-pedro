@@ -1,0 +1,77 @@
+@model AdminInscricoesViewModel
+@{
+    ViewData["Title"] = "Inscrições";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <h1 class="admin-titulo mb-1">Inscrições</h1>
+        <p class="text-secondary mb-0">Inscrições de todos os usuários. Abra uma inscrição para atualizar o status.</p>
+    </div>
+</div>
+
+<form method="get" asp-action="Index" class="row g-2 mb-3" role="search">
+    <div class="col-sm-6 col-lg-2">
+        <label class="form-label small fw-semibold mb-1" for="filtroStatus">Status</label>
+        <select id="filtroStatus" name="status" asp-items="StatusInscricaoExtensions.ListaParaSelect(Model.Status)" class="form-select">
+            <option value="">Todos</option>
+        </select>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <label class="form-label small fw-semibold mb-1" for="filtroEvento">Evento</label>
+        <select id="filtroEvento" name="eventoId" asp-items="Model.Eventos" class="form-select">
+            <option value="">Todos os eventos</option>
+        </select>
+    </div>
+    <div class="col-lg-5">
+        <label class="form-label small fw-semibold mb-1" for="filtroBusca">Busca</label>
+        <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+            <input id="filtroBusca" type="search" name="busca" value="@Model.Busca" class="form-control" placeholder="Participante, e-mail, evento ou nº da inscrição" />
+        </div>
+    </div>
+    <div class="col-lg-2 d-flex align-items-end gap-2">
+        <button type="submit" class="btn btn-outline-secondary flex-grow-1">Filtrar</button>
+        <a asp-action="Index" class="btn btn-link px-1" title="Limpar filtros"><i class="bi bi-x-lg"></i></a>
+    </div>
+</form>
+
+<div class="admin-card">
+    <div class="table-responsive">
+        <table class="table admin-tabela align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Inscrição</th>
+                    <th>Participante</th>
+                    <th>Evento</th>
+                    <th>Data</th>
+                    <th>Valor</th>
+                    <th>Status</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Inscricoes.Count == 0)
+                {
+                    <tr><td colspan="7" class="text-center text-secondary py-4">Nenhuma inscrição encontrada.</td></tr>
+                }
+                @foreach (var item in Model.Inscricoes)
+                {
+                    <tr>
+                        <td class="fw-bold">#@item.Id</td>
+                        <td>
+                            <div class="fw-semibold">@item.UsuarioNome</div>
+                            <div class="small text-secondary">@item.UsuarioEmail</div>
+                        </td>
+                        <td class="small">@item.EventoTitulo</td>
+                        <td class="small text-nowrap">@item.DataInscricao.DataHora()</td>
+                        <td class="small text-nowrap">@item.Valor.PrecoOuGratuito()</td>
+                        <td><span class="@item.Status.ClasseBadge()">@item.Status.Nome()</span></td>
+                        <td class="text-end"><a class="btn btn-sm btn-acao" asp-action="Details" asp-route-id="@item.Id">Ver detalhes</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<p class="small text-secondary mt-2">@Model.Inscricoes.Count inscrição(ões) encontrada(s)</p>

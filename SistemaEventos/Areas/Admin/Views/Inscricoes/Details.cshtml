@@ -1,0 +1,70 @@
+@model AdminInscricaoDetalhesViewModel
+@{
+    var item = Model.Inscricao;
+    ViewData["Title"] = $"Inscrição #{item.Id}";
+}
+
+<a asp-action="Index" class="link-secondary small text-decoration-none"><i class="bi bi-arrow-left"></i> Inscrições</a>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-7">
+        <h1 class="admin-titulo mb-1">Inscrição #@item.Id</h1>
+        <p class="mb-4"><span class="@item.Status.ClasseBadge()"><i class="bi @item.Status.Icone()"></i> @item.Status.Nome()</span></p>
+
+        <div class="admin-card p-4 mb-4">
+            <h2 class="h6 fw-bold mb-3"><i class="bi bi-person"></i> Participante</h2>
+            <dl class="dados-lista mb-0">
+                <dt>Nome</dt>
+                <dd><a asp-controller="Usuarios" asp-action="Details" asp-route-id="@item.UsuarioId" class="link-dark fw-semibold">@item.UsuarioNome</a></dd>
+                <dt>E-mail</dt>
+                <dd>@item.UsuarioEmail</dd>
+                <dt>Telefone</dt>
+                <dd>@(string.IsNullOrWhiteSpace(item.UsuarioTelefone) ? "—" : item.UsuarioTelefone)</dd>
+            </dl>
+        </div>
+
+        <div class="admin-card overflow-hidden">
+            <div class="d-flex gap-3 p-4">
+                <img src="@item.Imagem" alt="" class="inscricao-thumb" />
+                <div>
+                    <h2 class="h6 fw-bold mb-1">@item.EventoTitulo</h2>
+                    <div class="small text-secondary">@item.CategoriaNome</div>
+                    <div class="small"><i class="bi bi-calendar3"></i> @FormatacaoExtensions.Periodo(item.DataInicio, item.DataFim)</div>
+                    <div class="small"><i class="bi bi-geo-alt"></i> @item.Local</div>
+                    <div class="small"><i class="bi bi-people"></i> @Model.EventoInscritosAtivos de @Model.EventoVagas vagas ocupadas</div>
+                    <a class="small" asp-controller="Eventos" asp-action="Details" asp-route-id="@item.EventoId">Ver evento</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="admin-card p-4 painel-lateral">
+            <dl class="dados-lista">
+                <dt>Inscrito em</dt>
+                <dd>@item.DataInscricao.DataHora()</dd>
+                <dt>Valor</dt>
+                <dd class="fs-5 fw-bold">@item.Valor.PrecoOuGratuito()</dd>
+                @if (item.DataAtualizacao.HasValue)
+                {
+                    <dt>Última atualização</dt>
+                    <dd>@item.DataAtualizacao.Value.DataHora()</dd>
+                }
+                <dt>Observação</dt>
+                <dd>@(string.IsNullOrWhiteSpace(item.Observacao) ? "—" : item.Observacao)</dd>
+            </dl>
+            <hr />
+            <form asp-action="AtualizarStatus" asp-route-id="@item.Id" method="post">
+                <label for="novoStatus" class="form-label fw-bold">Atualizar status</label>
+                <select id="novoStatus" name="novoStatus" asp-items="StatusInscricaoExtensions.ListaParaSelect(Model.NovoStatus)" class="form-select mb-3"></select>
+                <button type="submit" class="btn btn-navy w-100 mb-2"><i class="bi bi-save"></i> Salvar alteração</button>
+                <a asp-action="Index" class="btn btn-outline-secondary w-100">Fechar</a>
+            </form>
+            <div class="small text-secondary mt-3">
+                <i class="bi bi-info-circle"></i>
+                Reativar uma inscrição cancelada exige vaga livre e evento não iniciado.
+                "Concluída" só pode ser marcada após o início do evento.
+            </div>
+        </div>
+    </div>
+</div>

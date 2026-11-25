@@ -1,0 +1,51 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Entrar";
+}
+
+<div class="row justify-content-center py-lg-4">
+    <div class="col-md-8 col-lg-5">
+        <div class="card border-0 shadow-sm auth-card">
+            <div class="card-body p-4 p-lg-5">
+                <div class="text-center mb-4">
+                    <span class="auth-icone"><i class="bi bi-box-arrow-in-right"></i></span>
+                    <h1 class="h3 fw-bolder mt-3 mb-1">Entrar</h1>
+                    <p class="text-secondary mb-0">Acesse sua conta para se inscrever nos eventos.</p>
+                </div>
+
+                <form asp-action="Login" method="post" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+                    <input type="hidden" asp-for="ReturnUrl" />
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold"></label>
+                        <input asp-for="Email" class="form-control form-control-lg" autocomplete="username" placeholder="voce@email.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Senha" class="form-label fw-semibold"></label>
+                        <input asp-for="Senha" class="form-control form-control-lg" autocomplete="current-password" />
+                        <span asp-validation-for="Senha" class="text-danger small"></span>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input asp-for="LembrarMe" class="form-check-input" />
+                        <label asp-for="LembrarMe" class="form-check-label"></label>
+                    </div>
+
+                    <button type="submit" class="btn btn-brand btn-lg w-100">Entrar</button>
+                </form>
+
+                <p class="text-center text-secondary small mt-4 mb-0">
+                    Ainda não tem conta?
+                    <a asp-action="Registrar" class="link-brand fw-semibold">Cadastre-se</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

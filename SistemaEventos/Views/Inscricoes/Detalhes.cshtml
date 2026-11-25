@@ -1,0 +1,75 @@
+@model InscricaoItemViewModel
+@{
+    ViewData["Title"] = $"Inscrição #{Model.Id}";
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a asp-action="Index" class="link-brand">Minhas inscrições</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Inscrição #@Model.Id</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm overflow-hidden">
+            <img src="@Model.Imagem" alt="Imagem do evento @Model.EventoTitulo" class="detalhe-capa-pequena" />
+            <div class="card-body p-4">
+                <span class="badge rounded-pill badge-categoria mb-2">@Model.CategoriaNome</span>
+                <h1 class="h3 fw-bolder mb-3">@Model.EventoTitulo</h1>
+                <ul class="list-unstyled evento-info evento-info-lg mb-0">
+                    <li><i class="bi bi-calendar3"></i><div><strong>Data</strong><span>@FormatacaoExtensions.Periodo(Model.DataInicio, Model.DataFim)</span></div></li>
+                    <li><i class="bi bi-geo-alt"></i><div><strong>Local</strong><span>@Model.Local</span></div></li>
+                </ul>
+                <a class="link-brand small fw-semibold d-inline-block mt-3" asp-controller="Eventos" asp-action="Details" asp-route-id="@Model.EventoId">
+                    Ver página do evento <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="h5 fw-bold mb-3">Inscrição #@Model.Id</h2>
+                <dl class="dados-lista mb-4">
+                    <dt>Situação</dt>
+                    <dd><span class="@Model.Status.ClasseBadge()"><i class="bi @Model.Status.Icone()"></i> @Model.Status.Nome()</span></dd>
+                    <dt>Participante</dt>
+                    <dd>@Model.UsuarioNome</dd>
+                    <dt>Inscrito em</dt>
+                    <dd>@Model.DataInscricao.DataHora()</dd>
+                    <dt>Valor</dt>
+                    <dd>@Model.Valor.PrecoOuGratuito()</dd>
+                    @if (Model.DataAtualizacao.HasValue)
+                    {
+                        <dt>Última atualização</dt>
+                        <dd>@Model.DataAtualizacao.Value.DataHora()</dd>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Observacao))
+                    {
+                        <dt>Observação</dt>
+                        <dd>@Model.Observacao</dd>
+                    }
+                </dl>
+
+                @if (Model.Status == StatusInscricao.Pendente)
+                {
+                    <p class="small text-secondary"><i class="bi bi-info-circle"></i> Aguardando a confirmação do pagamento pela organização.</p>
+                }
+
+                @if (Model.PodeCancelar)
+                {
+                    <form asp-action="Cancelar" asp-route-id="@Model.Id" method="post"
+                          data-confirmar="Deseja realmente cancelar esta inscrição? A vaga será liberada para outra pessoa.">
+                        <button type="submit" class="btn btn-outline-danger w-100"><i class="bi bi-x-circle"></i> Cancelar inscrição</button>
+                    </form>
+                }
+                else if (Model.Status != StatusInscricao.Cancelada)
+                {
+                    <p class="small text-secondary mb-0"><i class="bi bi-lock"></i> O cancelamento só é permitido antes do início do evento.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

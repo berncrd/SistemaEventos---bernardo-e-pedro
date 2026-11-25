@@ -1,0 +1,67 @@
+@{
+    ViewData["Title"] = "Sobre o projeto";
+}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <h1 class="fw-bolder mb-2">Sobre o projeto</h1>
+        <p class="lead text-secondary mb-4">
+            Sistema web de <strong>Eventos</strong> desenvolvido em ASP.NET Core MVC com Entity Framework Core,
+            SQL Server e ASP.NET Core Identity.
+        </p>
+
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+                <h2 class="h5 fw-bold">Contexto</h2>
+                <p class="mb-0">
+                    Organizadores publicam eventos (feiras, workshops, shows, palestras, corridas…) agrupados por
+                    <strong>categorias</strong>. Os participantes consultam o catálogo, escolhem um evento e fazem a
+                    <strong>inscrição</strong>, acompanhando depois a situação de cada uma. O administrador gerencia os
+                    cadastros e acompanha as inscrições de todos os usuários.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body p-4">
+                        <h2 class="h5 fw-bold"><i class="bi bi-person text-brand"></i> Usuário</h2>
+                        <ul class="mb-0">
+                            <li>Cria a própria conta, entra e sai do sistema.</li>
+                            <li>Consulta eventos com busca, filtro por categoria e vagas.</li>
+                            <li>Inscreve-se e acompanha as próprias inscrições.</li>
+                            <li>Cancela uma inscrição antes do início do evento.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body p-4">
+                        <h2 class="h5 fw-bold"><i class="bi bi-shield-lock text-brand"></i> Administrador</h2>
+                        <ul class="mb-0">
+                            <li>CRUD completo de categorias e de eventos (com imagem).</li>
+                            <li>Consulta as inscrições de todos os usuários.</li>
+                            <li>Atualiza o status das inscrições.</li>
+                            <li>Consulta as contas cadastradas.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h2 class="h5 fw-bold mb-3">Regras de negócio</h2>
+                <ol class="mb-0 d-grid gap-2">
+                    <li><strong>Inscrição sem duplicidade:</strong> um usuário não pode ter duas inscrições ativas no mesmo evento.</li>
+                    <li><strong>Vagas disponíveis:</strong> as inscrições ativas (pendentes, confirmadas e concluídas) não podem ultrapassar o número de vagas.</li>
+                    <li><strong>Bloqueio após o encerramento:</strong> não é possível se inscrever em eventos que já começaram ou que não estão publicados.</li>
+                    <li><strong>Cancelamento antes do início:</strong> o usuário só cancela a própria inscrição antes do início do evento.</li>
+                    <li><strong>Preço preservado:</strong> o valor do evento é gravado na inscrição; eventos gratuitos são confirmados na hora e pagos ficam pendentes.</li>
+                    <li><strong>Consistência dos cadastros:</strong> término após o início, início futuro ao cadastrar, vagas não menores que as inscrições ativas, categoria sem nome repetido e exclusões bloqueadas quando há registros vinculados.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+@* Mensagens de resultado das ações (gravadas em TempData pelos controllers) *@
+@{
+    var tipos = new[]
+    {
+        new { Chave = "Sucesso", Classe = "alert-success", Icone = "bi-check-circle-fill" },
+        new { Chave = "Erro", Classe = "alert-danger", Icone = "bi-x-octagon-fill" },
+        new { Chave = "Aviso", Classe = "alert-warning", Icone = "bi-exclamation-triangle-fill" },
+        new { Chave = "Info", Classe = "alert-info", Icone = "bi-info-circle-fill" }
+    };
+}
+@foreach (var tipo in tipos)
+{
+    var mensagem = TempData[tipo.Chave] as string;
+    if (!string.IsNullOrWhiteSpace(mensagem))
+    {
+        <div class="alert @tipo.Classe alert-dismissible fade show d-flex align-items-start gap-2 shadow-sm" role="alert">
+            <i class="bi @tipo.Icone fs-5 lh-1 mt-1"></i>
+            <div class="flex-grow-1">@mensagem</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+    }
+}

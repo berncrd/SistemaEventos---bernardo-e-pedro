@@ -1,0 +1,86 @@
+@model AdminEventoDetalhesViewModel
+@{
+    var evento = Model.Evento;
+    ViewData["Title"] = evento.Titulo;
+}
+
+<a asp-action="Index" class="link-secondary small text-decoration-none"><i class="bi bi-arrow-left"></i> Eventos</a>
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-2 mb-4">
+    <div>
+        <h1 class="admin-titulo mb-1">@evento.Titulo</h1>
+        <span class="badge @evento.ClasseSituacao">@evento.Situacao</span>
+        <span class="badge rounded-pill badge-categoria ms-1">@evento.CategoriaNome</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary" asp-area="" asp-controller="Eventos" asp-action="Details" asp-route-id="@evento.Id"><i class="bi bi-eye"></i> Ver no site</a>
+        <a class="btn btn-navy" asp-action="Edit" asp-route-id="@evento.Id"><i class="bi bi-pencil"></i> Editar</a>
+        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@evento.Id"><i class="bi bi-trash"></i> Excluir</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-5">
+        <div class="admin-card overflow-hidden h-100">
+            <img src="@evento.Imagem" alt="Imagem do evento" class="w-100 detalhe-capa-pequena" />
+            <div class="p-4">
+                <dl class="dados-lista mb-0">
+                    <dt>Data</dt>
+                    <dd>@evento.Periodo</dd>
+                    <dt>Local</dt>
+                    <dd>@evento.Local</dd>
+                    <dt>Preço</dt>
+                    <dd>@evento.Preco.PrecoOuGratuito()</dd>
+                    <dt>Vagas</dt>
+                    <dd>@evento.InscritosAtivos ocupadas de @evento.Vagas (@evento.VagasDisponiveis livres)</dd>
+                    <dt>Publicado</dt>
+                    <dd>@(evento.Ativo ? "Sim" : "Não (rascunho)")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="admin-card p-4 h-100">
+            <h2 class="h6 fw-bold">Descrição</h2>
+            <p class="texto-descricao small mb-4">@evento.Descricao</p>
+            <h2 class="h6 fw-bold">Ocupação</h2>
+            <div class="progress mb-1" style="height: 10px">
+                <div class="progress-bar @(evento.Lotado ? "bg-danger" : "bg-brand")" style="width: @(evento.PercentualOcupacao)%"></div>
+            </div>
+            <p class="small text-secondary mb-0">@evento.PercentualOcupacao% das vagas ocupadas</p>
+        </div>
+    </div>
+</div>
+
+<div class="admin-card">
+    <div class="admin-card-cabecalho">
+        <h2 class="h6 fw-bold mb-0">Inscritos (@Model.Inscricoes.Count)</h2>
+        <a class="small" asp-controller="Inscricoes" asp-action="Index" asp-route-eventoId="@evento.Id">Abrir em Inscrições</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table admin-tabela align-middle mb-0">
+            <thead>
+                <tr><th>#</th><th>Participante</th><th>Inscrito em</th><th>Valor</th><th>Status</th><th class="text-end">Ações</th></tr>
+            </thead>
+            <tbody>
+                @if (Model.Inscricoes.Count == 0)
+                {
+                    <tr><td colspan="6" class="text-center text-secondary py-4">Nenhuma inscrição neste evento.</td></tr>
+                }
+                @foreach (var item in Model.Inscricoes)
+                {
+                    <tr>
+                        <td class="fw-bold">#@item.Id</td>
+                        <td>
+                            <div class="fw-semibold">@item.UsuarioNome</div>
+                            <div class="small text-secondary">@item.UsuarioEmail</div>
+                        </td>
+                        <td class="small">@item.DataInscricao.DataHora()</td>
+                        <td class="small">@item.Valor.PrecoOuGratuito()</td>
+                        <td><span class="@item.Status.ClasseBadge()">@item.Status.Nome()</span></td>
+                        <td class="text-end"><a class="btn btn-sm btn-acao" asp-controller="Inscricoes" asp-action="Details" asp-route-id="@item.Id">Ver detalhes</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+@model AlterarSenhaViewModel
+@{
+    ViewData["Title"] = "Alterar senha";
+}
+
+<div class="row justify-content-center py-lg-3">
+    <div class="col-md-8 col-lg-5">
+        <div class="card border-0 shadow-sm auth-card">
+            <div class="card-body p-4 p-lg-5">
+                <div class="text-center mb-4">
+                    <span class="auth-icone"><i class="bi bi-key"></i></span>
+                    <h1 class="h3 fw-bolder mt-3 mb-0">Alterar senha</h1>
+                </div>
+
+                <form asp-action="AlterarSenha" method="post" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="SenhaAtual" class="form-label fw-semibold"></label>
+                        <input asp-for="SenhaAtual" class="form-control" autocomplete="current-password" />
+                        <span asp-validation-for="SenhaAtual" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NovaSenha" class="form-label fw-semibold"></label>
+                        <input asp-for="NovaSenha" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="NovaSenha" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="ConfirmarNovaSenha" class="form-label fw-semibold"></label>
+                        <input asp-for="ConfirmarNovaSenha" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="ConfirmarNovaSenha" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-brand flex-grow-1">Salvar nova senha</button>
+                        <a class="btn btn-outline-secondary" asp-action="MinhaConta">Voltar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

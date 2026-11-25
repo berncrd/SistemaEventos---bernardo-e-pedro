@@ -1,0 +1,78 @@
+@model MinhaContaViewModel
+@{
+    ViewData["Title"] = "Minha conta";
+    var ehUsuario = User.IsInRole(Perfis.Usuario);
+}
+
+<h1 class="fw-bolder mb-4">Minha conta</h1>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-4 text-center">
+                <span class="avatar-grande">@(string.IsNullOrEmpty(Model.NomeCompleto) ? "?" : Model.NomeCompleto.Substring(0, 1).ToUpper())</span>
+                <h2 class="h5 fw-bold mt-3 mb-0">@Model.NomeCompleto</h2>
+                <p class="text-secondary small mb-2">@Model.Email</p>
+                <span class="badge rounded-pill badge-categoria">@Model.Perfil</span>
+                <hr />
+                <div class="row text-center">
+                    <div class="col">
+                        <div class="fs-4 fw-bold">@Model.TotalInscricoes</div>
+                        <div class="small text-secondary">inscrições</div>
+                    </div>
+                    <div class="col">
+                        <div class="fs-4 fw-bold">@Model.InscricoesAtivas</div>
+                        <div class="small text-secondary">em aberto</div>
+                    </div>
+                </div>
+                @if (Model.DataCadastro.HasValue)
+                {
+                    <p class="small text-secondary mt-3 mb-0">Cadastrado em @Model.DataCadastro.Value.DataCurta()</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="h5 fw-bold mb-3">Dados pessoais</h2>
+                <form asp-action="MinhaConta" method="post" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="NomeCompleto" class="form-label fw-semibold"></label>
+                        <input asp-for="NomeCompleto" class="form-control" />
+                        <span asp-validation-for="NomeCompleto" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" for="emailSomenteLeitura">E-mail</label>
+                            <input id="emailSomenteLeitura" class="form-control" value="@Model.Email" disabled />
+                            <div class="form-text">O e-mail é usado no login e não pode ser alterado.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Telefone" class="form-label fw-semibold"></label>
+                            <input asp-for="Telefone" class="form-control" placeholder="(11) 99999-9999" />
+                            <span asp-validation-for="Telefone" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="submit" class="btn btn-brand"><i class="bi bi-save"></i> Salvar alterações</button>
+                        <a class="btn btn-outline-secondary" asp-action="AlterarSenha"><i class="bi bi-key"></i> Alterar senha</a>
+                        @if (ehUsuario)
+                        {
+                            <a class="btn btn-outline-brand ms-md-auto" asp-controller="Inscricoes" asp-action="Index"><i class="bi bi-list-check"></i> Minhas inscrições</a>
+                        }
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

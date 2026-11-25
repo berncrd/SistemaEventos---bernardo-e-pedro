@@ -1,0 +1,63 @@
+@model List<CategoriaListaViewModel>
+@{
+    ViewData["Title"] = "Categorias";
+    var busca = ViewData["Busca"] as string;
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <h1 class="admin-titulo mb-0">Categorias</h1>
+    <a class="btn btn-navy" asp-action="Create"><i class="bi bi-plus-lg"></i> Nova categoria</a>
+</div>
+
+<form method="get" asp-action="Index" class="row g-2 mb-3" role="search">
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+            <input type="search" name="busca" value="@busca" class="form-control" placeholder="Buscar por nome ou descrição" />
+        </div>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-secondary">Buscar</button>
+        @if (!string.IsNullOrWhiteSpace(busca))
+        {
+            <a asp-action="Index" class="btn btn-link">Limpar</a>
+        }
+    </div>
+</form>
+
+<div class="admin-card">
+    <div class="table-responsive">
+        <table class="table admin-tabela align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th class="text-center">Eventos</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr><td colspan="4" class="text-center text-secondary py-4">Nenhuma categoria encontrada.</td></tr>
+                }
+                @foreach (var categoria in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@categoria.Nome</td>
+                        <td class="small text-secondary">@categoria.Descricao</td>
+                        <td class="text-center">
+                            <a asp-controller="Eventos" asp-action="Index" asp-route-categoriaId="@categoria.Id" class="badge rounded-pill text-bg-light text-decoration-none">@categoria.TotalEventos</a>
+                        </td>
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-acao" asp-action="Details" asp-route-id="@categoria.Id">Detalhes</a>
+                            <a class="btn btn-sm btn-acao" asp-action="Edit" asp-route-id="@categoria.Id">Editar</a>
+                            <a class="btn btn-sm btn-acao-perigo" asp-action="Delete" asp-route-id="@categoria.Id">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<p class="small text-secondary mt-2">@Model.Count categoria(s) cadastrada(s)</p>

@@ -1,0 +1,23 @@
+@{
+    ViewData["Title"] = "Acesso negado";
+    var rotaTentada = ViewData["ReturnUrl"] as string;
+}
+
+<div class="row justify-content-center py-5">
+    <div class="col-md-8 col-lg-6 text-center">
+        <span class="auth-icone auth-icone-perigo"><i class="bi bi-shield-lock"></i></span>
+        <h1 class="h2 fw-bolder mt-3">Acesso negado</h1>
+        <p class="text-secondary mb-2">
+            Sua conta não tem permissão para acessar esta página.
+        </p>
+        @if (!string.IsNullOrEmpty(rotaTentada))
+        {
+            <p class="small text-secondary mb-4">Rota solicitada: <code>@rotaTentada</code></p>
+        }
+        <p class="small text-secondary mb-4">
+            As áreas de administração são exclusivas do perfil <strong>Admin</strong> e as inscrições são exclusivas do perfil <strong>Usuário</strong>.
+        </p>
+        <a class="btn btn-brand" asp-controller="Home" asp-action="Index">Voltar ao início</a>
+        <a class="btn btn-outline-secondary ms-2" asp-controller="Eventos" asp-action="Index">Ver eventos</a>
+    </div>
+</div>

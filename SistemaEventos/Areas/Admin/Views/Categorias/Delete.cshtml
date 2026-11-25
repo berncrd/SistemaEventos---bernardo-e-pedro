@@ -1,0 +1,39 @@
+@model CategoriaListaViewModel
+@{
+    ViewData["Title"] = "Excluir categoria";
+}
+
+<a asp-action="Index" class="link-secondary small text-decoration-none"><i class="bi bi-arrow-left"></i> Categorias</a>
+<h1 class="admin-titulo mt-2 mb-4">Excluir categoria</h1>
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="admin-card p-4">
+            @if (Model.TotalEventos > 0)
+            {
+                <div class="alert alert-warning small">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Esta categoria possui <strong>@Model.TotalEventos evento(s)</strong> vinculado(s). A exclusão será bloqueada até que eles sejam movidos ou excluídos.
+                </div>
+            }
+            else
+            {
+                <p class="mb-3">Tem certeza de que deseja excluir esta categoria? Esta ação não pode ser desfeita.</p>
+            }
+
+            <dl class="dados-lista mb-4">
+                <dt>Nome</dt>
+                <dd>@Model.Nome</dd>
+                <dt>Descrição</dt>
+                <dd>@(string.IsNullOrWhiteSpace(Model.Descricao) ? "—" : Model.Descricao)</dd>
+                <dt>Eventos vinculados</dt>
+                <dd>@Model.TotalEventos</dd>
+            </dl>
+
+            <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Excluir</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,96 @@
+@model Evento
+@{
+    var imagemAtual = string.IsNullOrWhiteSpace(Model.ImagemUrl) ? null : Model.ImagemUrl;
+    var erroImagem = ViewData.ModelState["imagemArquivo"]?.Errors.FirstOrDefault()?.ErrorMessage;
+}
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="mb-3">
+            <label asp-for="Titulo" class="form-label fw-semibold"></label>
+            <input asp-for="Titulo" class="form-control" placeholder="Ex.: Feira de Tecnologia" />
+            <span asp-validation-for="Titulo" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Descricao" class="form-label fw-semibold"></label>
+            <textarea asp-for="Descricao" class="form-control" rows="6" maxlength="2000"
+                      placeholder="Conte o que vai acontecer, programação, público-alvo..."></textarea>
+            <span asp-validation-for="Descricao" class="text-danger small"></span>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label asp-for="CategoriaId" class="form-label fw-semibold"></label>
+                <select asp-for="CategoriaId" asp-items="ViewBag.CategoriaId" class="form-select">
+                    <option value="">Selecione...</option>
+                </select>
+                <span asp-validation-for="CategoriaId" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Local" class="form-label fw-semibold"></label>
+                <input asp-for="Local" class="form-control" placeholder="Ex.: Centro de Convenções" />
+                <span asp-validation-for="Local" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label asp-for="DataInicio" class="form-label fw-semibold"></label>
+                <input asp-for="DataInicio" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" class="form-control" />
+                <span asp-validation-for="DataInicio" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="DataFim" class="form-label fw-semibold"></label>
+                <input asp-for="DataFim" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" class="form-control" />
+                <span asp-validation-for="DataFim" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label asp-for="Vagas" class="form-label fw-semibold"></label>
+                <input asp-for="Vagas" type="number" min="1" max="10000" class="form-control" />
+                <span asp-validation-for="Vagas" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Preco" class="form-label fw-semibold"></label>
+                <div class="input-group">
+                    <span class="input-group-text">R$</span>
+                    <input asp-for="Preco" type="text" inputmode="decimal" class="form-control" placeholder="0,00" />
+                </div>
+                <div class="form-text">Use vírgula para os centavos. Informe 0 para evento gratuito.</div>
+                <span asp-validation-for="Preco" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="form-check form-switch mb-2">
+            <input asp-for="Ativo" class="form-check-input" role="switch" />
+            <label asp-for="Ativo" class="form-check-label"></label>
+        </div>
+        <div class="form-text mb-3">Eventos não publicados ficam como rascunho e não aparecem no catálogo.</div>
+    </div>
+
+    <div class="col-lg-4">
+        <label class="form-label fw-semibold" for="imagemArquivo">Imagem do evento</label>
+        <div class="preview-imagem mb-2">
+            <img id="previewImagem" src="@(imagemAtual ?? EventoResumoViewModel.ImagemPadrao)" alt="Pré-visualização da imagem" />
+        </div>
+        <input type="file" id="imagemArquivo" name="imagemArquivo" class="form-control @(erroImagem != null ? "input-validation-error" : "")"
+               accept=".jpg,.jpeg,.png,.webp,.gif" data-preview="#previewImagem" />
+        <div class="form-text">JPG, PNG, WEBP ou GIF de até 2 MB.</div>
+        @if (erroImagem != null)
+        {
+            <span class="text-danger small">@erroImagem</span>
+        }
+        @if (imagemAtual != null)
+        {
+            <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" id="removerImagem" name="removerImagem" value="true" />
+                <label class="form-check-label small" for="removerImagem">Remover a imagem atual</label>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,89 @@
+@model AdminEventosViewModel
+@{
+    ViewData["Title"] = "Eventos";
+    var situacoes = new[]
+    {
+        new { Valor = "", Rotulo = "Todas as situações" },
+        new { Valor = "abertos", Rotulo = "Inscrições abertas" },
+        new { Valor = "lotados", Rotulo = "Lotados" },
+        new { Valor = "encerrados", Rotulo = "Iniciados / realizados" },
+        new { Valor = "rascunhos", Rotulo = "Rascunhos (não publicados)" }
+    };
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <h1 class="admin-titulo mb-0">Eventos</h1>
+    <a class="btn btn-navy" asp-action="Create"><i class="bi bi-plus-lg"></i> Novo evento</a>
+</div>
+
+<form method="get" asp-action="Index" class="row g-2 mb-3" role="search">
+    <div class="col-lg-5">
+        <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+            <input type="search" name="busca" value="@Model.Busca" class="form-control" placeholder="Buscar por título ou local" />
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <select name="categoriaId" asp-items="Model.Categorias" class="form-select" aria-label="Categoria">
+            <option value="">Todas as categorias</option>
+        </select>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <select name="situacao" class="form-select" aria-label="Situação">
+            @foreach (var s in situacoes)
+            {
+                <option value="@s.Valor" selected="@(Model.Situacao == s.Valor || (string.IsNullOrEmpty(Model.Situacao) && s.Valor == ""))">@s.Rotulo</option>
+            }
+        </select>
+    </div>
+    <div class="col-lg-1 d-grid">
+        <button type="submit" class="btn btn-outline-secondary">Filtrar</button>
+    </div>
+</form>
+
+<div class="admin-card">
+    <div class="table-responsive">
+        <table class="table admin-tabela align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Evento</th>
+                    <th>Data</th>
+                    <th class="text-center">Vagas</th>
+                    <th>Preço</th>
+                    <th>Situação</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Eventos.Count == 0)
+                {
+                    <tr><td colspan="6" class="text-center text-secondary py-4">Nenhum evento encontrado.</td></tr>
+                }
+                @foreach (var evento in Model.Eventos)
+                {
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="@evento.Imagem" alt="" class="tabela-thumb" />
+                                <div>
+                                    <div class="fw-semibold">@evento.Titulo</div>
+                                    <div class="small text-secondary">@evento.CategoriaNome · @evento.Local</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="small text-nowrap">@evento.DataInicio.DataHora()</td>
+                        <td class="text-center small text-nowrap">@evento.InscritosAtivos / @evento.Vagas</td>
+                        <td class="small text-nowrap">@evento.Preco.PrecoOuGratuito()</td>
+                        <td><span class="badge @evento.ClasseSituacao">@evento.Situacao</span></td>
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-acao" asp-action="Details" asp-route-id="@evento.Id">Detalhes</a>
+                            <a class="btn btn-sm btn-acao" asp-action="Edit" asp-route-id="@evento.Id">Editar</a>
+                            <a class="btn btn-sm btn-acao-perigo" asp-action="Delete" asp-route-id="@evento.Id">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<p class="small text-secondary mt-2">@Model.Eventos.Count evento(s) listado(s)</p>

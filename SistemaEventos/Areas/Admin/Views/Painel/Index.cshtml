@@ -1,0 +1,137 @@
+@model PainelViewModel
+@{
+    ViewData["Title"] = "Painel";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <h1 class="admin-titulo mb-1">Painel</h1>
+        <p class="text-secondary mb-0">Resumo dos cadastros e das inscrições.</p>
+    </div>
+    <a class="btn btn-navy" asp-controller="Eventos" asp-action="Create"><i class="bi bi-plus-lg"></i> Novo evento</a>
+</div>
+
+<div class="row row-cols-2 row-cols-lg-4 g-3 mb-4">
+    <div class="col">
+        <a class="card stat-card h-100" asp-controller="Eventos" asp-action="Index" asp-route-situacao="abertos">
+            <div class="card-body">
+                <span class="stat-icone bg-roxo"><i class="bi bi-calendar-check"></i></span>
+                <div class="stat-valor">@Model.EventosAbertos</div>
+                <div class="stat-rotulo">eventos com inscrições abertas</div>
+                <div class="small text-secondary">de @Model.TotalEventos cadastrados</div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <a class="card stat-card h-100" asp-controller="Inscricoes" asp-action="Index">
+            <div class="card-body">
+                <span class="stat-icone bg-azul"><i class="bi bi-ticket-perforated"></i></span>
+                <div class="stat-valor">@Model.InscricoesAtivas</div>
+                <div class="stat-rotulo">inscrições em aberto</div>
+                <div class="small text-secondary">pendentes + confirmadas</div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <a class="card stat-card h-100" asp-controller="Inscricoes" asp-action="Index" asp-route-status="Pendente">
+            <div class="card-body">
+                <span class="stat-icone bg-amarelo"><i class="bi bi-hourglass-split"></i></span>
+                <div class="stat-valor">@Model.InscricoesPendentes</div>
+                <div class="stat-rotulo">aguardando confirmação</div>
+                <div class="small text-secondary">clique para revisar</div>
+            </div>
+        </a>
+    </div>
+    <div class="col">
+        <a class="card stat-card h-100" asp-controller="Usuarios" asp-action="Index">
+            <div class="card-body">
+                <span class="stat-icone bg-verde"><i class="bi bi-cash-coin"></i></span>
+                <div class="stat-valor">@Model.ReceitaConfirmada.Moeda()</div>
+                <div class="stat-rotulo">em inscrições confirmadas</div>
+                <div class="small text-secondary">@Model.TotalUsuarios contas · @Model.TotalCategorias categorias</div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-6">
+        <div class="admin-card h-100">
+            <div class="admin-card-cabecalho">
+                <h2 class="h6 fw-bold mb-0">Próximos eventos</h2>
+                <a class="small" asp-controller="Eventos" asp-action="Index">Ver todos</a>
+            </div>
+            @if (Model.ProximosEventos.Count == 0)
+            {
+                <p class="text-secondary small p-3 mb-0">Nenhum evento futuro cadastrado.</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table admin-tabela align-middle mb-0">
+                        <thead>
+                            <tr><th>Evento</th><th>Data</th><th style="width: 34%">Ocupação</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var evento in Model.ProximosEventos)
+                            {
+                                <tr>
+                                    <td>
+                                        <a class="fw-semibold link-dark text-decoration-none" asp-controller="Eventos" asp-action="Details" asp-route-id="@evento.Id">@evento.Titulo</a>
+                                        @if (!evento.Ativo)
+                                        {
+                                            <span class="badge text-bg-secondary ms-1">Rascunho</span>
+                                        }
+                                    </td>
+                                    <td class="text-nowrap small">@evento.DataInicio.DataHora()</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="progress flex-grow-1" style="height: 6px">
+                                                <div class="progress-bar @(evento.Lotado ? "bg-danger" : "bg-brand")" style="width: @(evento.PercentualOcupacao)%"></div>
+                                            </div>
+                                            <span class="small text-nowrap">@evento.InscritosAtivos/@evento.Vagas</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-xl-6">
+        <div class="admin-card h-100">
+            <div class="admin-card-cabecalho">
+                <h2 class="h6 fw-bold mb-0">Últimas inscrições</h2>
+                <a class="small" asp-controller="Inscricoes" asp-action="Index">Ver todas</a>
+            </div>
+            @if (Model.UltimasInscricoes.Count == 0)
+            {
+                <p class="text-secondary small p-3 mb-0">Nenhuma inscrição realizada ainda.</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table admin-tabela align-middle mb-0">
+                        <thead>
+                            <tr><th>#</th><th>Participante</th><th>Evento</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.UltimasInscricoes)
+                            {
+                                <tr>
+                                    <td><a class="fw-bold link-dark" asp-controller="Inscricoes" asp-action="Details" asp-route-id="@item.Id">#@item.Id</a></td>
+                                    <td class="small">@item.UsuarioNome</td>
+                                    <td class="small">@item.EventoTitulo</td>
+                                    <td><span class="@item.Status.ClasseBadge()">@item.Status.Nome()</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

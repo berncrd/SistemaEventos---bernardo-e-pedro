@@ -1,0 +1,74 @@
+@model NovaInscricaoViewModel
+@{
+    var evento = Model.Evento!;
+    ViewData["Title"] = "Confirmar inscrição";
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a asp-controller="Eventos" asp-action="Index" class="link-brand">Eventos</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Eventos" asp-action="Details" asp-route-id="@evento.Id" class="link-brand">@evento.Titulo</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Inscrição</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <h1 class="fw-bolder mb-1">Confirmar inscrição</h1>
+        <p class="text-secondary mb-4">Revise os dados do evento escolhido e confirme sua participação.</p>
+
+        <div class="card border-0 shadow-sm overflow-hidden">
+            <div class="row g-0">
+                <div class="col-md-5">
+                    <img src="@evento.Imagem" alt="Imagem do evento @evento.Titulo" class="w-100 h-100 object-fit-cover inscricao-capa" />
+                </div>
+                <div class="col-md-7">
+                    <div class="card-body p-4">
+                        <span class="badge rounded-pill badge-categoria mb-2">@evento.CategoriaNome</span>
+                        <h2 class="h4 fw-bold mb-3">@evento.Titulo</h2>
+                        <ul class="list-unstyled evento-info mb-3">
+                            <li><i class="bi bi-calendar3"></i> @evento.Periodo</li>
+                            <li><i class="bi bi-geo-alt"></i> @evento.Local</li>
+                            <li><i class="bi bi-people"></i> @evento.VagasDisponiveis de @evento.Vagas vagas disponíveis</li>
+                            <li><i class="bi bi-ticket-perforated"></i> <strong>@evento.Preco.PrecoOuGratuito()</strong></li>
+                        </ul>
+
+                        <div class="alert @(evento.Gratuito ? "alert-success" : "alert-warning") small">
+                            @if (evento.Gratuito)
+                            {
+                                <span><i class="bi bi-lightning-charge"></i> Evento gratuito: sua inscrição será <strong>confirmada imediatamente</strong>.</span>
+                            }
+                            else
+                            {
+                                <span><i class="bi bi-hourglass-split"></i> Evento pago: sua inscrição ficará <strong>pendente</strong> até a organização confirmar o pagamento. O valor de <strong>@evento.Preco.Moeda()</strong> fica garantido.</span>
+                            }
+                        </div>
+
+                        <form asp-action="Nova" method="post" novalidate>
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+                            <input type="hidden" asp-for="EventoId" />
+
+                            <div class="mb-3">
+                                <label asp-for="Observacao" class="form-label fw-semibold"></label>
+                                <textarea asp-for="Observacao" class="form-control" rows="3" maxlength="300"
+                                          placeholder="Ex.: necessidade de acessibilidade, restrição alimentar..."></textarea>
+                                <span asp-validation-for="Observacao" class="text-danger small"></span>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-brand btn-lg flex-grow-1">
+                                    <i class="bi bi-check2-circle"></i> Confirmar inscrição
+                                </button>
+                                <a class="btn btn-outline-secondary btn-lg" asp-controller="Eventos" asp-action="Details" asp-route-id="@evento.Id">Voltar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

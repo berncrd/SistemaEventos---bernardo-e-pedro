@@ -1,0 +1,68 @@
+@model RegistroViewModel
+@{
+    ViewData["Title"] = "Criar conta";
+}
+
+<div class="row justify-content-center py-lg-4">
+    <div class="col-md-10 col-lg-6">
+        <div class="card border-0 shadow-sm auth-card">
+            <div class="card-body p-4 p-lg-5">
+                <div class="text-center mb-4">
+                    <span class="auth-icone"><i class="bi bi-person-plus"></i></span>
+                    <h1 class="h3 fw-bolder mt-3 mb-1">Criar conta</h1>
+                    <p class="text-secondary mb-0">Cadastre-se para se inscrever e acompanhar seus eventos.</p>
+                </div>
+
+                <form asp-action="Registrar" method="post" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="NomeCompleto" class="form-label fw-semibold"></label>
+                        <input asp-for="NomeCompleto" class="form-control" autocomplete="name" />
+                        <span asp-validation-for="NomeCompleto" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-7">
+                            <label asp-for="Email" class="form-label fw-semibold"></label>
+                            <input asp-for="Email" class="form-control" autocomplete="email" placeholder="voce@email.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-5">
+                            <label asp-for="Telefone" class="form-label fw-semibold"></label>
+                            <input asp-for="Telefone" class="form-control" autocomplete="tel" placeholder="(11) 99999-9999" />
+                            <span asp-validation-for="Telefone" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-2">
+                        <div class="col-md-6">
+                            <label asp-for="Senha" class="form-label fw-semibold"></label>
+                            <input asp-for="Senha" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="Senha" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ConfirmarSenha" class="form-label fw-semibold"></label>
+                            <input asp-for="ConfirmarSenha" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="ConfirmarSenha" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <p class="form-text mb-4">
+                        Mínimo de 6 caracteres, com letra maiúscula, minúscula, número e caractere especial (ex.: <code>Evento@2026</code>).
+                    </p>
+
+                    <button type="submit" class="btn btn-brand btn-lg w-100">Criar conta</button>
+                </form>
+
+                <p class="text-center text-secondary small mt-4 mb-0">
+                    Já tem conta?
+                    <a asp-action="Login" class="link-brand fw-semibold">Entrar</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

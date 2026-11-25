@@ -1,0 +1,53 @@
+@model Categoria
+@{
+    ViewData["Title"] = Model.Nome;
+}
+
+<a asp-action="Index" class="link-secondary small text-decoration-none"><i class="bi bi-arrow-left"></i> Categorias</a>
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-2 mb-4">
+    <h1 class="admin-titulo mb-0">@Model.Nome</h1>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.Id"><i class="bi bi-pencil"></i> Editar</a>
+        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id"><i class="bi bi-trash"></i> Excluir</a>
+    </div>
+</div>
+
+<div class="admin-card p-4 mb-4">
+    <dl class="dados-lista mb-0">
+        <dt>Código</dt>
+        <dd>@Model.Id</dd>
+        <dt>Descrição</dt>
+        <dd>@(string.IsNullOrWhiteSpace(Model.Descricao) ? "—" : Model.Descricao)</dd>
+        <dt>Eventos vinculados</dt>
+        <dd>@Model.Eventos.Count</dd>
+    </dl>
+</div>
+
+<div class="admin-card">
+    <div class="admin-card-cabecalho">
+        <h2 class="h6 fw-bold mb-0">Eventos desta categoria</h2>
+        <a class="small" asp-controller="Eventos" asp-action="Create">Novo evento</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table admin-tabela align-middle mb-0">
+            <thead>
+                <tr><th>Evento</th><th>Data</th><th>Local</th><th>Publicado</th></tr>
+            </thead>
+            <tbody>
+                @if (Model.Eventos.Count == 0)
+                {
+                    <tr><td colspan="4" class="text-center text-secondary py-4">Nenhum evento nesta categoria.</td></tr>
+                }
+                @foreach (var evento in Model.Eventos)
+                {
+                    <tr>
+                        <td><a class="fw-semibold link-dark" asp-controller="Eventos" asp-action="Details" asp-route-id="@evento.Id">@evento.Titulo</a></td>
+                        <td class="small">@evento.DataInicio.DataHora()</td>
+                        <td class="small">@evento.Local</td>
+                        <td>@(evento.Ativo ? "Sim" : "Não")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

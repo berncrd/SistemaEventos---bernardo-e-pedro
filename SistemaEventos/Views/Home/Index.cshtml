@@ -1,0 +1,155 @@
+@model HomeViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    ViewData["Title"] = "Início";
+    var logado = SignInManager.IsSignedIn(User);
+    var ehAdmin = User.IsInRole(Perfis.Admin);
+    var ehUsuario = User.IsInRole(Perfis.Usuario);
+}
+
+<section class="hero-home rounded-4 p-4 p-lg-5 mb-5">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+            <span class="badge rounded-pill hero-pill mb-3"><i class="bi bi-stars"></i> Feiras, workshops, shows e palestras</span>
+            <h1 class="display-5 fw-bolder lh-sm mb-3">Encontre eventos, garanta sua vaga e acompanhe tudo em um só lugar.</h1>
+            <p class="fs-5 text-white-75 mb-4">
+                O <strong>Encontro</strong> reúne os eventos da cidade por categoria. Consulte a data, o local e as vagas,
+                faça sua inscrição em poucos cliques e acompanhe a situação de cada uma.
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-light btn-lg fw-semibold px-4" asp-controller="Eventos" asp-action="Index">
+                    <i class="bi bi-search"></i> Explorar eventos
+                </a>
+                @if (!logado)
+                {
+                    <a class="btn btn-outline-light btn-lg px-4" asp-controller="Conta" asp-action="Registrar">Criar minha conta</a>
+                }
+                else if (ehAdmin)
+                {
+                    <a class="btn btn-outline-light btn-lg px-4" asp-area="Admin" asp-controller="Painel" asp-action="Index">Ir para o painel</a>
+                }
+                else
+                {
+                    <a class="btn btn-outline-light btn-lg px-4" asp-controller="Inscricoes" asp-action="Index">Minhas inscrições</a>
+                }
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="row g-3 text-center">
+                <div class="col-4">
+                    <div class="hero-stat"><strong>@Model.TotalEventosAbertos</strong><span>eventos abertos</span></div>
+                </div>
+                <div class="col-4">
+                    <div class="hero-stat"><strong>@Model.TotalCategorias</strong><span>categorias</span></div>
+                </div>
+                <div class="col-4">
+                    <div class="hero-stat"><strong>@Model.TotalParticipacoes</strong><span>inscrições</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-5">
+    <h2 class="h4 fw-bold mb-3">O que você pode fazer</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+        @if (ehAdmin)
+        {
+            <div class="col">
+                <a class="card funcao-card h-100" asp-area="Admin" asp-controller="Eventos" asp-action="Index">
+                    <div class="card-body">
+                        <i class="bi bi-calendar2-plus"></i>
+                        <h3 class="h6 fw-bold mt-3">Gerenciar eventos</h3>
+                        <p class="small text-secondary mb-0">Cadastre, edite, publique e exclua eventos com imagem, vagas e preço.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a class="card funcao-card h-100" asp-area="Admin" asp-controller="Inscricoes" asp-action="Index">
+                    <div class="card-body">
+                        <i class="bi bi-clipboard-check"></i>
+                        <h3 class="h6 fw-bold mt-3">Acompanhar inscrições</h3>
+                        <p class="small text-secondary mb-0">Busque inscrições de todos os usuários e atualize o status de cada uma.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a class="card funcao-card h-100" asp-area="Admin" asp-controller="Categorias" asp-action="Index">
+                    <div class="card-body">
+                        <i class="bi bi-tags"></i>
+                        <h3 class="h6 fw-bold mt-3">Organizar categorias</h3>
+                        <p class="small text-secondary mb-0">Mantenha o catálogo organizado por tipo de evento.</p>
+                    </div>
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="col">
+                <a class="card funcao-card h-100" asp-controller="Eventos" asp-action="Index">
+                    <div class="card-body">
+                        <i class="bi bi-search-heart"></i>
+                        <h3 class="h6 fw-bold mt-3">1. Consultar</h3>
+                        <p class="small text-secondary mb-0">Busque por nome ou local e filtre por categoria ou eventos com vagas.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a class="card funcao-card h-100" asp-controller="Eventos" asp-action="Index">
+                    <div class="card-body">
+                        <i class="bi bi-ticket-perforated"></i>
+                        <h3 class="h6 fw-bold mt-3">2. Inscrever-se</h3>
+                        <p class="small text-secondary mb-0">Escolha o evento e confirme sua inscrição. Eventos gratuitos são confirmados na hora.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                @if (ehUsuario)
+                {
+                    <a class="card funcao-card h-100" asp-controller="Inscricoes" asp-action="Index">
+                        <div class="card-body">
+                            <i class="bi bi-list-check"></i>
+                            <h3 class="h6 fw-bold mt-3">3. Acompanhar</h3>
+                            <p class="small text-secondary mb-0">Veja a situação das suas inscrições e cancele antes do início, se precisar.</p>
+                        </div>
+                    </a>
+                }
+                else
+                {
+                    <a class="card funcao-card h-100" asp-controller="Conta" asp-action="Registrar">
+                        <div class="card-body">
+                            <i class="bi bi-person-plus"></i>
+                            <h3 class="h6 fw-bold mt-3">3. Acompanhar</h3>
+                            <p class="small text-secondary mb-0">Crie sua conta gratuita para se inscrever e acompanhar seu histórico.</p>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+<section>
+    <div class="d-flex justify-content-between align-items-end mb-3">
+        <h2 class="h4 fw-bold mb-0">Próximos eventos</h2>
+        <a class="link-brand fw-semibold" asp-controller="Eventos" asp-action="Index">Ver todos <i class="bi bi-arrow-right"></i></a>
+    </div>
+    @if (Model.ProximosEventos.Count == 0)
+    {
+        <div class="estado-vazio">
+            <i class="bi bi-calendar-x"></i>
+            <p class="mb-0">Nenhum evento com inscrições abertas no momento.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var evento in Model.ProximosEventos)
+            {
+                <div class="col">
+                    <partial name="_EventoCard" model="evento" />
+                </div>
+            }
+        </div>
+    }
+</section>

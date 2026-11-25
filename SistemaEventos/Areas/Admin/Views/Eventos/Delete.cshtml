@@ -1,0 +1,49 @@
+@model EventoResumoViewModel
+@{
+    ViewData["Title"] = "Excluir evento";
+}
+
+<a asp-action="Index" class="link-secondary small text-decoration-none"><i class="bi bi-arrow-left"></i> Eventos</a>
+<h1 class="admin-titulo mt-2 mb-4">Excluir evento</h1>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="admin-card overflow-hidden">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="@Model.Imagem" alt="" class="w-100 h-100 object-fit-cover" style="min-height: 180px" />
+                </div>
+                <div class="col-md-8 p-4">
+                    @if (Model.InscritosAtivos > 0)
+                    {
+                        <div class="alert alert-warning small">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Este evento possui <strong>@Model.InscritosAtivos inscrição(ões) ativa(s)</strong> e a exclusão será bloqueada.
+                            Para encerrar as inscrições, edite o evento e desmarque "Publicado".
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Tem certeza de que deseja excluir este evento? Esta ação não pode ser desfeita.</p>
+                    }
+
+                    <dl class="dados-lista mb-4">
+                        <dt>Título</dt>
+                        <dd>@Model.Titulo</dd>
+                        <dt>Categoria</dt>
+                        <dd>@Model.CategoriaNome</dd>
+                        <dt>Data</dt>
+                        <dd>@Model.Periodo</dd>
+                        <dt>Local</dt>
+                        <dd>@Model.Local</dd>
+                    </dl>
+
+                    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Excluir</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
